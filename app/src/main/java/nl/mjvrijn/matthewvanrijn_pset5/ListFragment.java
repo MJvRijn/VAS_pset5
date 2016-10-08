@@ -45,6 +45,12 @@ public class ListFragment extends Fragment {
         adapter = new ListViewAdapter(getActivity(), 0, manager.getData());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
+    }
+
     /* Define and set listeners and actions for item presses, long presses and keyboard enter presses. */
     public void setUpListeners() {
 

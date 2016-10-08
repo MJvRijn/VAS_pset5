@@ -34,6 +34,20 @@ public class TodoList {
         return items;
     }
 
+    public int numComplete() {
+        int counter = 0;
+        for(TodoItem item : items) {
+            if(item.isDone()) {
+                counter++;
+            }
+        }
+
+        return counter;
+    }
+
+    public int size() {
+        return items.size();
+    }
 
     public void addTask(String task) {
         TodoItem tdi = database.addTask(table, task);

@@ -1,14 +1,15 @@
 <resources>
     <string name="app_name">matthewvanrijn-pset5</string>
-    <string name="list_add_toast">Added to-do list \"%s\"</string>
-    <string name="list_remove_toast">Removed to-do list \"%s\"</string>
+    <string name="list_add_toast">Created to-do list \"%s\"</string>
+    <string name="list_remove_toast">Deleted to-do list \"%s\"</string>
     <string name="item_add_toast">Added \"%s\" to your to-do list</string>
     <string name="item_remove_toast">Removed \"%s\" to your to-do list</string>
-    <string name="list_add_dialog_title">Add to-do list</string>
+    <string name="list_add_dialog_title">Create to-do list</string>
     <string name="list_add_dialog_message">Enter the title of your new list:</string>
-    <string name="list_remove_dialog_title">Remove to-do list</string>
-    <string name="list_remove_dialog_message">Are you sure you want to you \"%s\" to-do list?</string>
+    <string name="list_remove_dialog_title">Delete to-do list</string>
+    <string name="list_remove_dialog_message">Are you sure you want to delete your \"%s\" to-do list? This action cannot be undone.</string>
     <string name="item_remove_dialog_title">Remove from to-do list</string>
     <string name="item_remove_dialog_message">Are you sure you want to remove \"%s\" from your to-do list?</string>
+    <string name="action_add">Create</string>
 
 </resources>

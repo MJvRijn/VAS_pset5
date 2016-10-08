@@ -28,9 +28,12 @@ public class MenuAdapter extends ArrayAdapter<TodoList> {
         }
 
         TextView textView = (TextView) convertView.findViewById(R.id.menu_entry_textview);
+        TextView counter = (TextView) convertView.findViewById(R.id.menu_entry_counter);
 
         // Set the task text
-        textView.setText(getItem(position).getName());
+        TodoList list = getItem(position);
+        textView.setText(list.getName());
+        counter.setText(String.format("%d/%d", list.numComplete(), list.size()));
 
 
         return convertView;

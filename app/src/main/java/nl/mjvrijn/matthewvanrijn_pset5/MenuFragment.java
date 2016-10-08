@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MenuFragment extends Fragment {
     private TodoManager manager;
@@ -40,6 +41,12 @@ public class MenuFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
+    }
+
     /* Define and set listeners and actions for item presses, long presses and keyboard enter presses. */
     public void setUpListeners(ListView listView) {
 
@@ -59,6 +66,7 @@ public class MenuFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 manager.removeList(adapter.getItem(position));
                                 adapter.notifyDataSetChanged();
+                                Toast.makeText(getActivity(), String.format(getResources().getString(R.string.list_remove_toast), toRemove.getName()), Toast.LENGTH_LONG).show();
                             }
                         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
