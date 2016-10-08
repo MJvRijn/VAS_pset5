@@ -26,6 +26,10 @@ public class TodoList {
         return name;
     }
 
+    public String getTable() {
+        return table;
+    }
+
     public ArrayList<TodoItem> getItems() {
         return items;
     }

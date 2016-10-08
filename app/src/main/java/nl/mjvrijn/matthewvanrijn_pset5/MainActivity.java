@@ -45,16 +45,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addList(View v) {
-        EditText inputField = new EditText(this);
+        final EditText inputField = new EditText(this);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle(getResources().getString(R.string.list_remove_dialog_title));
-        dialog.setMessage(getResources().getString(R.string.list_remove_dialog_message));
+        dialog.setTitle(getResources().getString(R.string.list_add_dialog_title));
+        dialog.setMessage(getResources().getString(R.string.list_add_dialog_message));
         dialog.setView(inputField);
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                TodoManager.getInstance(getApplicationContext()).addList("Bob");
+                String name = inputField.getText().toString().trim();
+
+                if(!name.equals("")) {
+                    TodoManager.getInstance(getApplicationContext()).addList(name);
+                }
             }
         });
         dialog.show();

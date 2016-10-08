@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">matthewvanrijn-pset5</string>
-    <string name="action_settings">Settings</string>
-    <string name="list_add_toast">Added \"%s\" to your To-Do list</string>
-    <string name="list_remove_toast">Removed \"%s\" to your To-Do list</string>
-    <string name="list_remove_dialog_title">Remove from To-Do list</string>
-    <string name="list_remove_dialog_message">Are you sure you want to remove \"%s\" from your To-Do list?</string>
+    <string name="list_add_toast">Added to-do list \"%s\"</string>
+    <string name="list_remove_toast">Removed to-do list \"%s\"</string>
+    <string name="item_add_toast">Added \"%s\" to your to-do list</string>
+    <string name="item_remove_toast">Removed \"%s\" to your to-do list</string>
+    <string name="list_add_dialog_title">Add to-do list</string>
+    <string name="list_add_dialog_message">Enter the title of your new list:</string>
+    <string name="list_remove_dialog_title">Remove to-do list</string>
+    <string name="list_remove_dialog_message">Are you sure you want to you \"%s\" to-do list?</string>
+    <string name="item_remove_dialog_title">Remove from to-do list</string>
+    <string name="item_remove_dialog_message">Are you sure you want to remove \"%s\" from your to-do list?</string>
 
 </resources>

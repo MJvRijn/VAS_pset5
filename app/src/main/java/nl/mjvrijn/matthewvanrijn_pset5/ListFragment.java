@@ -56,8 +56,8 @@ public class ListFragment extends Fragment {
                 final TodoItem toRemove = adapter.getItem(position);
 
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(getResources().getString(R.string.list_remove_dialog_title))
-                        .setMessage(String.format(getResources().getString(R.string.list_remove_dialog_message),
+                        .setTitle(getResources().getString(R.string.item_remove_dialog_title))
+                        .setMessage(String.format(getResources().getString(R.string.item_remove_dialog_message),
                                 toRemove.getTask()))
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override

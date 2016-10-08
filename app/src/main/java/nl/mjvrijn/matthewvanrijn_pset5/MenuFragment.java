@@ -47,7 +47,7 @@ public class MenuFragment extends Fragment {
         // and does nothing on no.
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final TodoList toRemove = adapter.getItem(position);
 
                 new AlertDialog.Builder(getActivity())
@@ -57,7 +57,8 @@ public class MenuFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //todo: implement list deletion
+                                manager.removeList(adapter.getItem(position));
+                                adapter.notifyDataSetChanged();
                             }
                         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override

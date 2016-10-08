@@ -59,4 +59,9 @@ public class TodoManager {
         database.addTable(name, table);
         todoLists.add(new TodoList(database, name, table));
     }
+
+    public void removeList(TodoList list) {
+        database.removeTable(list);
+        todoLists.remove(list);
+    }
 }

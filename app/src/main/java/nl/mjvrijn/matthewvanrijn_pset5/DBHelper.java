@@ -74,6 +74,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public void removeTable(TodoList toRemove) {
+        getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + toRemove.getTable());
+        getWritableDatabase().delete("lists", "name='" + toRemove.getName() + "'", null);
+
+    }
+
     /* Remove a given task from both the database and the data set and notify the adapter. */
     public void removeTask(String table, TodoItem toRemove) {
         SQLiteDatabase database = getWritableDatabase();
