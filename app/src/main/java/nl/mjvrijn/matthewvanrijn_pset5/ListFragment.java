@@ -112,7 +112,7 @@ public class ListFragment extends Fragment {
         if(!task.equals("")) {
             manager.getCurrentList().addTask(task);
             editText.setText("");
-            Toast.makeText(getActivity(), String.format(getResources().getString(R.string.list_add_toast),
+            Toast.makeText(getActivity(), String.format(getResources().getString(R.string.item_add_toast),
                     task), Toast.LENGTH_LONG).show();
 
             updateList();
@@ -122,7 +122,7 @@ public class ListFragment extends Fragment {
     /* Remove a given task from the list. */
     public void removeTask(TodoItem t) {
         manager.getCurrentList().removeTask(t);
-        Toast.makeText(getActivity(), String.format(getResources().getString(R.string.list_remove_toast),
+        Toast.makeText(getActivity(), String.format(getResources().getString(R.string.item_remove_toast),
                 t.getTask()), Toast.LENGTH_LONG).show();
 
         updateList();

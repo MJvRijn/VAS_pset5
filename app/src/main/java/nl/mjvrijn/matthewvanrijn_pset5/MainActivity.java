@@ -3,26 +3,23 @@ package nl.mjvrijn.matthewvanrijn_pset5;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /* MainActivity.java is the main and only activity of the app. */
 public class MainActivity extends AppCompatActivity {
-    private ListFragment listFragment;
-    private MenuFragment menuFragment;
+    private ListFrame listFrame;
+    private MenuFrame menuFrame;
 
     /* Set up the app */
     @Override
@@ -32,17 +29,45 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        listFragment = new ListFragment();
-        menuFragment = new MenuFragment();
+        ListFragment listFragment = new ListFragment();
+        MenuFragment menuFragment = new MenuFragment();
+
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().add(R.id.list_container, menuFragment).commit();
+        fm.beginTransaction().add(R.id.menu_container, menuFragment).commit();
+
 
         if(savedInstanceState == null) {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, menuFragment, "ACTIVE_FRAGMENT").commit();
+            /getFragmentManager().beginTransaction().replace(R.id.fragment_container, menuFragment).commit();
         }
+    }
 
-        if(getFragmentManager().getBackStackEntryCount() != 0) {
-            setTitle(TodoManager.getInstance(this).getCurrentList().getName());
-        } else {
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor editor = getSharedPreferences("state", MODE_PRIVATE).edit();
+        editor.putString("lastList", TodoManager.getInstance(this).getCurrentList().getName());
+        editor.putBoolean("onMenu", isOnMenu());
+        editor.apply();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+        SharedPreferences prefs = getSharedPreferences("state", MODE_PRIVATE);
+        String lastList = prefs.getString("lastList", null);
+        boolean onMenu = prefs.getBoolean("onMenu", true);
+
+        TodoManager.getInstance(this).setCurrentList(lastList);
+
+        if(onMenu) {
             setTitle("Lists");
+        } else {
+            goToListFragment();
+            setTitle(TodoManager.getInstance(this).getCurrentList().getName());
         }
 
     }
@@ -100,13 +125,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.app_menu, menu);
 
-        Fragment f = getFragmentManager().findFragmentById(R.id.fragment_container);
+        menu.findItem(R.id.action_add).setVisible(isOnMenu());
 
-        if(f instanceof MenuFragment) {
-            menu.findItem(R.id.action_add).setVisible(true);
-        } else {
-            menu.findItem(R.id.action_add).setVisible(false);
-        }
         return true;
     }
 
@@ -117,5 +137,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public boolean isOnMenu() {
+        Fragment f = getFragmentManager().findFragmentById(R.id.fragment_container);
+
+        return f instanceof MenuFragment;
     }
 }

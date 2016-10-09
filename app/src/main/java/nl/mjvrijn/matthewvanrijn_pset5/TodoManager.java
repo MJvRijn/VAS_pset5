@@ -1,7 +1,6 @@
 package nl.mjvrijn.matthewvanrijn_pset5;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -9,13 +8,12 @@ public class TodoManager {
     private static DBHelper database;
     private static ArrayList<TodoList> todoLists;
     private static ArrayList<TodoItem> data;
-    private static int currentList;
+    private static TodoList currentList;
     private static TodoManager instance = new TodoManager();
 
     private TodoManager() {
         todoLists = new ArrayList<>();
         data = new ArrayList<>();
-        currentList = 0;
     }
 
     public static TodoManager getInstance(Context c) {
@@ -23,6 +21,11 @@ public class TodoManager {
             database = new DBHelper(c);
             readTodos();
 
+            if(todoLists.size() > 0) {
+                currentList = todoLists.get(0);
+            } else {
+                currentList = null;
+            }
         }
         return instance;
     }
@@ -34,7 +37,7 @@ public class TodoManager {
 
     public void updateData() {
         data.clear();
-        data.addAll(todoLists.get(currentList).getItems());
+        data.addAll(currentList.getItems());
     }
 
     public ArrayList<TodoItem> getData() {
@@ -42,7 +45,7 @@ public class TodoManager {
     }
 
     public TodoList getCurrentList() {
-        return todoLists.get(currentList);
+        return currentList;
     }
 
     public ArrayList<TodoList> getListData() {
@@ -50,7 +53,16 @@ public class TodoManager {
     }
 
     public void setCurrentList(int pos) {
-        currentList = pos;
+        currentList = todoLists.get(pos);
+    }
+
+    public void setCurrentList(String name) {
+        for(TodoList list : todoLists) {
+            if(list.getName().equals(name)) {
+                currentList = list;
+                break;
+            }
+        }
     }
 
     public void addList(String name) {
@@ -63,5 +75,12 @@ public class TodoManager {
     public void removeList(TodoList list) {
         database.removeTable(list);
         todoLists.remove(list);
+        if(list == currentList) {
+            if(todoLists.size() > 0) {
+                currentList = todoLists.get(0);
+            } else {
+                currentList = null;
+            }
+        }
     }
 }
