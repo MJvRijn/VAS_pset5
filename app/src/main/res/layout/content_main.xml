@@ -9,15 +9,19 @@
     android:orientation="horizontal">
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:paddingTop="?android:attr/actionBarSize"
+        android:id="@+id/menu_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="invisible"/>
 
     <FrameLayout
-        android:id="@+id/oi"
+        android:paddingTop="?android:attr/actionBarSize"
+        android:id="@+id/list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

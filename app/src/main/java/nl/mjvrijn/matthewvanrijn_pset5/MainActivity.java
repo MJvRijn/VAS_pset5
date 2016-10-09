@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -14,12 +15,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 /* MainActivity.java is the main and only activity of the app. */
 public class MainActivity extends AppCompatActivity {
-    private ListFrame listFrame;
-    private MenuFrame menuFrame;
+    private FrameLayout listFrame;
+    private FrameLayout menuFrame;
+    private ListFragment listFragment;
+    private MenuFragment menuFragment;
 
     /* Set up the app */
     @Override
@@ -29,17 +33,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListFragment listFragment = new ListFragment();
-        MenuFragment menuFragment = new MenuFragment();
+        menuFragment = new MenuFragment();
+        listFragment = new ListFragment();
 
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.list_container, menuFragment).commit();
-        fm.beginTransaction().add(R.id.menu_container, menuFragment).commit();
+        fm.beginTransaction().replace(R.id.menu_container, menuFragment).commit();
+        fm.beginTransaction().replace(R.id.list_container, listFragment).commit();
 
-
-        if(savedInstanceState == null) {
-            /getFragmentManager().beginTransaction().replace(R.id.fragment_container, menuFragment).commit();
-        }
+        listFrame = (FrameLayout) findViewById(R.id.list_container);
+        menuFrame = (FrameLayout) findViewById(R.id.menu_container);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences.Editor editor = getSharedPreferences("state", MODE_PRIVATE).edit();
         editor.putString("lastList", TodoManager.getInstance(this).getCurrentList().getName());
-        editor.putBoolean("onMenu", isOnMenu());
+        editor.putBoolean("onMenu", listFrame.getVisibility() == View.INVISIBLE);
         editor.apply();
     }
 
@@ -56,12 +58,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-
         SharedPreferences prefs = getSharedPreferences("state", MODE_PRIVATE);
         String lastList = prefs.getString("lastList", null);
         boolean onMenu = prefs.getBoolean("onMenu", true);
 
         TodoManager.getInstance(this).setCurrentList(lastList);
+
+        menuFrame.setVisibility(View.VISIBLE);
 
         if(onMenu) {
             setTitle("Lists");
@@ -93,39 +96,45 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.list_add_toast), name), Toast.LENGTH_LONG).show();
+
+                menuFragment.updateList();
             }
         });
 
         AlertDialog ad = dialog.create();
         ad.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         ad.show();
-
-
     }
 
     public void goToListFragment() {
-        setTitle(TodoManager.getInstance(this).getCurrentList().getName());
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            menuFrame.setVisibility(View.INVISIBLE);
+        }
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, listFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        listFrame.setVisibility(View.VISIBLE);
+
+        setTitle(TodoManager.getInstance(this).getCurrentList().getName());
+        invalidateOptionsMenu();
+        listFragment.updateList();
     }
 
     @Override
     public void onBackPressed() {
-        if(getFragmentManager().getBackStackEntryCount() != 0) {
+        if(menuFrame.getVisibility() == View.INVISIBLE) {
             setTitle("Lists");
+            menuFrame.setVisibility(View.VISIBLE);
+            listFrame.setVisibility(View.INVISIBLE);
+            invalidateOptionsMenu();
+        } else {
+            super.onBackPressed();
         }
-
-        super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.app_menu, menu);
 
-        menu.findItem(R.id.action_add).setVisible(isOnMenu());
+        menu.findItem(R.id.action_add).setVisible(menuFrame.getVisibility() == View.VISIBLE);
 
         return true;
     }
@@ -140,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean isOnMenu() {
-        Fragment f = getFragmentManager().findFragmentById(R.id.fragment_container);
-
-        return f instanceof MenuFragment;
+        return menuFrame.getVisibility() == View.VISIBLE;
     }
 }
