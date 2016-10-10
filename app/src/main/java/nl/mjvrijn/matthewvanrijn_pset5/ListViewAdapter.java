@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/* This adapter connects the ListView with the data set. */
+/* This adapter connects the ListView in the ListFragment with the data set. */
 public class ListViewAdapter extends ArrayAdapter<TodoItem> {
 
     public ListViewAdapter(Context context, int textViewID, ArrayList<TodoItem> data) {

@@ -1,7 +1,6 @@
 package nl.mjvrijn.matthewvanrijn_pset5;
 
-/* A data class to hold information about a task. Should be self-explanatory. */
-
+/* A data class to hold information about a task.*/
 public class TodoItem {
     private long id;
     private String task;

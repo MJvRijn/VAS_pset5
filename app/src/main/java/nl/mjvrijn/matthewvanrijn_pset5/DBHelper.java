@@ -8,25 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-/* DBHelper manages the data set and its connection to the database. Doing this in one
- * class ensures that the database and data set remain synchronised at all times, so that
- * no additional tasks have to be performed when the app ones or closes. */
+/* DBHelper manages all interactions between the list data objects and the SQLite database. */
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "todo.db";
     private static final int DB_VERSION = 1;
 
-    /* The constructor of the helper stored the listView adapter to notify it of changes
-     * and reads data from the database to the data s
-     * et on creation. */
     public DBHelper(Context c) {
         super(c, DB_NAME, null, DB_VERSION);
     }
 
-    /* Read the to-do list from the database and put it in the data set. When finished, notify
-     * the adapter of change. */
+    /* Read a to-do list from the database and return it as a list of items */
     public ArrayList<TodoItem> readTasks(String table) {
         ArrayList<TodoItem> output = new ArrayList<>();
 
@@ -48,7 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return output;
     }
 
-    /* Add a task given by a string to both the database and the data set and notify the adapter. */
+    /* Add a task given by a string to the database */
     public TodoItem addTask(String table, String task) {
         SQLiteDatabase database = getWritableDatabase();
 
@@ -62,6 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return new TodoItem(id, task, false);
     }
 
+    /* Add a table for a new TodoList to the database and add a reference to it in the lists table */
     public void addTable(String name, String table) {
         String query = "CREATE TABLE %s ( _id INTEGER PRIMARY KEY AUTOINCREMENT , task TEXT , done INTEGER )";
         getWritableDatabase().execSQL(String.format(query, table));
@@ -74,20 +67,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    /* Remove the table of a deleted ToDoList and remove its reference from the lists table. */
     public void removeTable(TodoList toRemove) {
         getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + toRemove.getTable());
         getWritableDatabase().delete("lists", "name='" + toRemove.getName() + "'", null);
 
     }
 
-    /* Remove a given task from both the database and the data set and notify the adapter. */
+    /* Remove a given task from the database. */
     public void removeTask(String table, TodoItem toRemove) {
         SQLiteDatabase database = getWritableDatabase();
         database.delete(table, "_id = ?", new String[]{String.valueOf(toRemove.getID())});
     }
 
-    /* Toggle the checked status of a task in both the database and the data set and notify
-     * the adapter. */
+    /* Toggle whether a task is completed in the database */
     public void toggleCompleted(String table, TodoItem task) {
         SQLiteDatabase database = getWritableDatabase();
 
@@ -104,6 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
     }
 
+    /* Read all tables referenced in the lists table and turn them into a list of lists. */
     public ArrayList<TodoList> getLists() {
         ArrayList<TodoList> output = new ArrayList<>();
 

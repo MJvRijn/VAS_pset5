@@ -1,6 +1,5 @@
 package nl.mjvrijn.matthewvanrijn_pset5;
 
-
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,18 +10,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/* The ListFragment is the fragment that displays the list of TodoItems and allows them to be marked
+ * as complete. */
 public class ListFragment extends Fragment {
     private TodoManager manager;
     private ListViewAdapter adapter;
     private ListView listView;
     private EditText editText;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        manager = TodoManager.getInstance(getActivity());
+        adapter = new ListViewAdapter(getActivity(), 0, manager.getData());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,21 +42,8 @@ public class ListFragment extends Fragment {
         listView.setAdapter(adapter);
         setUpListeners();
         updateList();
+
         return view;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        manager = TodoManager.getInstance(getActivity());
-        adapter = new ListViewAdapter(getActivity(), 0, manager.getData());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().invalidateOptionsMenu();
     }
 
     /* Define and set listeners and actions for item presses, long presses and keyboard enter presses. */
@@ -74,6 +69,7 @@ public class ListFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing
+                        dialog.cancel();
                     }
                 }).show();
 
@@ -86,7 +82,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 manager.getCurrentList().toggleCompleted(adapter.getItem(position));
-                updateList();
+                ((MainActivity) getActivity()).notifyAllAdapters();
             }
         });
 
@@ -115,7 +111,7 @@ public class ListFragment extends Fragment {
             Toast.makeText(getActivity(), String.format(getResources().getString(R.string.item_add_toast),
                     task), Toast.LENGTH_LONG).show();
 
-            updateList();
+            ((MainActivity) getActivity()).notifyAllAdapters();
         }
     }
 
@@ -125,9 +121,10 @@ public class ListFragment extends Fragment {
         Toast.makeText(getActivity(), String.format(getResources().getString(R.string.item_remove_toast),
                 t.getTask()), Toast.LENGTH_LONG).show();
 
-        updateList();
+        ((MainActivity) getActivity()).notifyAllAdapters();
     }
 
+    /* Make sure the manager has the tasks for the correct list loaded before notifying the adapter. */
     public void updateList() {
         manager.updateData();
         adapter.notifyDataSetChanged();

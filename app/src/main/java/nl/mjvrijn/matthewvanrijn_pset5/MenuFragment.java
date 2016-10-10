@@ -4,31 +4,17 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MenuFragment extends Fragment {
     private TodoManager manager;
     private MenuAdapter adapter;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_menu, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.menu_listview);
-        listView.setAdapter(adapter);
-
-        setUpListeners(listView);
-
-        return view;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,15 +27,20 @@ public class MenuFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().invalidateOptionsMenu();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_menu, container, false);
+        ListView listView = (ListView) view.findViewById(R.id.menu_listview);
+        listView.setAdapter(adapter);
+
+        setUpListeners(listView);
+
+        return view;
     }
 
     /* Define and set listeners and actions for item presses, long presses and keyboard enter presses. */
     public void setUpListeners(ListView listView) {
 
-        // On a long press; display a confirmation dialog box which calls removeTask on yes
+        // On a long press; display a confirmation dialog box which removes the list on yes
         // and does nothing on no.
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -64,13 +55,15 @@ public class MenuFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 manager.removeList(adapter.getItem(position));
-                                adapter.notifyDataSetChanged();
-                                Toast.makeText(getActivity(), String.format(getResources().getString(R.string.list_remove_toast), toRemove.getName()), Toast.LENGTH_LONG).show();
+                                ((MainActivity) getActivity()).notifyAllAdapters();
+                                Toast.makeText(getActivity(), String.format(getResources().getString(R.string.list_remove_toast),
+                                                        toRemove.getName()), Toast.LENGTH_LONG).show();
                             }
                         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
+                        // Do Nothing
+                        dialog.cancel();
                     }
                 }).show();
 
@@ -78,7 +71,7 @@ public class MenuFragment extends Fragment {
             }
         });
 
-        // On a normal press; check the task off.
+        // On a normal press; display the list contents
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -88,6 +81,7 @@ public class MenuFragment extends Fragment {
         });
     }
 
+    /* This utility method allows the adapter to be notified of change from another fragment. */
     public void updateList() {
         adapter.notifyDataSetChanged();
     }
