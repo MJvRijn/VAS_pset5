@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -102,7 +101,6 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<TodoList> output = new ArrayList<>();
 
         Cursor c = getWritableDatabase().rawQuery("SELECT tab, name FROM lists", null);
-        Log.e(getClass().getSimpleName(), "GETTING LISTS");
 
         while(c.moveToNext()) {
             String table = c.getString(c.getColumnIndex("tab"));
