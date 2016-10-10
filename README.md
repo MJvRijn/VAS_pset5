@@ -1,12 +1,13 @@
-# Native App Studio: To-Do List
+# Native App Studio: Many Lists
 By Matthew van Rijn (10779353)
 
-This app allows you add tasks to a todo list.
+This app allows you add tasks to a collection of todo lists.
 
 ### Activities
-There is only one activity this time which shows the user their todo list. The user can add tasks to the list by selecting the text field at the bottom, entering a task and then pressing either on the add button or on the enter key on their keyboard. By pressing a task it can be checked off, which greys out the text and adds a green tick to the right side of it. To remove a task, completed or not, from the todo list it can be long pressed. This will prompt the user to confirm their choice.
+This app consists of one activity and two fragments. There is a fragment for showing the list of todo lists called MenuFragment and a fragment for showing the tasks in a todo list called ListFragment. When the app is in portrait, the fragments are shown one at a time. When the user selects a todo list on the menu fragment the app will close the menu fragment and open the list fragment. In landscape the fragments are shown side-by-side, so selecting a todo list from the menu fragment will not close the menu fragment but simply update the list fragment. 
 
 ### Screenshots
-![List](doc/list.png)
-![Confirmation](doc/confirm.png)
+![Portrait](doc/portrait.png)
+![Landscape1](doc/landscape1.png)
+![Landscape2](doc/landscape2.png)
 
